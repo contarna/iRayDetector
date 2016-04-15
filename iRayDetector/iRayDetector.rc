@@ -112,6 +112,7 @@ BEGIN
                     WS_BORDER
     GROUPBOX        "曝光模式",IDC_STATIC,433,75,160,49
     GROUPBOX        "触发模式",IDC_STATIC,435,136,150,61
+    PUSHBUTTON      "保存截图",IDC_BUTTON1,525,291,37,35,NOT WS_VISIBLE
 END
 
 

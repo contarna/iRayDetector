@@ -44,11 +44,17 @@ END_MESSAGE_MAP()
 //类外调用函数======================================
 void CRawDib::Init()
 {
+	int m_nWidth =ImageW;
+	int m_nHeight =ImageH;
+
+	m_pRawDataMatrix =new BYTE[m_nHeight*m_nWidth*2];
+	memset(m_pRawDataMatrix,0,m_nWidth*m_nHeight*2);
+	
 	m_hLogPal=CreatHLogPal();
 	m_hDibHead=CreatHDibHead();
 	m_hBMP=(HDIB)::GlobalAlloc(GHND,IMAGESIZE);				//3072*3072
 
-	m_crSrc.SetRect(0,0,ImageWidth-1,ImageHeight-1);		//3072-1,3072-1
+	m_crSrc.SetRect(0,0,ImageW-1,ImageH-1);		//3072-1,3072-1
 	GetClientRect(m_crDest);
 	m_pDC=GetDC();
 }
@@ -120,8 +126,8 @@ HDIB CRawDib::CreatHDibHead()
 	lpbi        =   (LPSTR)GlobalLock(g_hDibHead);
 	lpDIB       =   (BITMAPINFOHEADER*)lpbi;
 	lpDIB->biSize    =   sizeof(BITMAPINFOHEADER);
-	lpDIB->biWidth   =   ImageWidth;	//3072
-	lpDIB->biHeight  =   ImageHeight;	//3072
+	lpDIB->biWidth   =   ImageW;	//3072
+	lpDIB->biHeight  =   ImageH;	//3072
 	lpDIB->biPlanes  =   1;
 	lpDIB->biBitCount=   8;
 	lpDIB->biCompression	=  BI_RGB;
@@ -172,8 +178,8 @@ void CRawDib::dspBMP(HDC hDC,CRect crSrc,CRect crDest,HDIB hDIB,HDIB hDibHead,HP
 	BYTE*       pBmp=(BYTE*)GlobalLock((HGLOBAL)hDIB);
 	lpbmi=(BITMAPINFO*)GlobalLock((HGLOBAL)hDibHead);
 	lpDIB=(BITMAPINFOHEADER*)lpbmi;
-	lpDIB->biWidth=ImageWidth;
-	lpDIB->biHeight=ImageHeight;
+	lpDIB->biWidth=ImageW;
+	lpDIB->biHeight=ImageH;
 	hOldPal=::SelectPalette(hDC,hLogPal,FALSE);
 	::RealizePalette (hDC);
 	::SetStretchBltMode(hDC,COLORONCOLOR);
@@ -203,7 +209,7 @@ BOOL CRawDib::GetBMP(HGLOBAL hBMP,BYTE* pRawData,int WindowWidth,int WindowPosit
 	}
 	int iWidth=WindowWidth+1;
 	int piexel;
-	for (int i=0;i<ImageWidth*ImageHeight;i++)
+	for (int i=0;i<ImageW*ImageH;i++)
 	{
 		piexel= pWDR[i];
 		if (piexel<low)

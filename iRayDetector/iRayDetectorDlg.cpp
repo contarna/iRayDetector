@@ -5,6 +5,9 @@
 #include "iRayDetector.h"
 #include "iRayDetectorDlg.h"
 
+// 用于判断保存路径和创建保存路径 [4/14/2016 lipengsong]
+#include <IMAGEHLP.H>
+#pragma comment(lib,"imagehlp.lib")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,7 +40,7 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	else if(iMsg == FPD_EXP_TIMEOUT)
 	{
 		strInfo = _T("Exposure timeout");
-
+		
 		int nExpMode = 0;
 		FPD_GetExposureMode(pFrame->m_hGigeAdapter, nExpMode);
 		if(nExpMode != 0)
@@ -68,15 +71,60 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	else if(iMsg == FPD_IMAGE)
 	{
 		strInfo = _T("got image");
+		// 得到正式图像 [4/14/2016 lipengsong]
+		CString  str_ImageFileName ="iRayMam.raw";
+		CString  str_ImageFilePath =pFrame->m_initInfo.strCorrectPath +str_ImageFileName;
+		
+		int ImageSize =pFrame->m_configInfo.detectorInfo.ImageHeight * pFrame->m_configInfo.detectorInfo.ImageWidth * sizeof(WORD);
+		WORD* ImageData = pData;
+		
+		DWORD nWriten;
+		HANDLE hWriteFile;
+		hWriteFile=CreateFileA(str_ImageFilePath,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+		BOOL result =WriteFile(hWriteFile,ImageData,ImageSize,&nWriten,NULL);
+		if (!result)
+		{
+			strInfo ="Save Image Failed!";
+		}
+		else
+		{
+			pFrame->m_rRawImage.m_nWPos =pFrame->m_nWinPos;
+			pFrame->m_rRawImage.m_nWWid =pFrame->m_nWinWidth;
+			pFrame->m_rRawImage.LoadRawImage(str_ImageFilePath);
+		}
+		CloseHandle(hWriteFile);		
 
 	}
 	else if(iMsg == FPD_IMAGE_BINNING)
 	{
+		// 得到AEC预曝光图像 [4/14/2016 lipengsong]
+		CString  str_AECFileName ="iRayMam_AEC.raw";
+		CString  str_AECFilePath =pFrame->m_initInfo.strCorrectPath +str_AECFileName;
+
+		int ImageSize =pFrame->m_configInfo.dynamicInfo.BinningH * pFrame->m_configInfo.dynamicInfo.BinningW*sizeof(WORD);
+		WORD* ImageAECData = pData;
+
+		DWORD nWriten;
+		HANDLE hWriteFile;
+		hWriteFile=CreateFileA(str_AECFilePath,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+		BOOL result =WriteFile(hWriteFile,ImageAECData,ImageSize,&nWriten,NULL);
+		if (!result)
+		{
+			strInfo ="Save AEC Image Failed!";
+		}
+		/*AEC图像尺寸特殊
+		else
+		{
+			pFrame->m_rRawImage.LoadRawImage(str_AECFilePath);
+		}
+		*/
+		CloseHandle(hWriteFile);		
 
 	}
 	else if(iMsg == FPD_IMAGE_PREV)
 	{
 		strInfo = _T("got prev image");
+		// Mammo 探测器下用不到该反馈 [4/14/2016 lipengsong]
 	}
 	else if(iMsg == FPD_CONFIG_DETECTOR)
 	{
@@ -87,6 +135,8 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	{
 		strInfo.Format(_T("Get Temperature: %f"), fValue1);
 		FPD_GetDetectorConfiguration(hID, pFrame->m_configInfo);
+		pFrame->m_strTemp =strInfo;
+		pFrame->UpdateData(FALSE);
 	}
 	else if(iMsg == FPD_GET_HUMIDITY)
 	{
@@ -125,16 +175,13 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	else if(iMsg == FPD_CORR_CREATE_OK)
 	{
 		strInfo = _T("Create correction ok");
-
 	}
 	else if(iMsg == FPD_CORR_CREATE_FAILED)
 	{
 		strInfo = _T("Create correction failed");
-
 	}
 	else if(iMsg == FPD_CORR_GET_OFFSET_IMAGE)
 	{
-	
 		return 0;
 	}
 	else if(iMsg == FPD_CORR_THROW_OFFSET_IMAGE)
@@ -387,6 +434,11 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	{
 		strInfo.Format(_T("Close exp window failed"));
 	}
+
+	// 更新探测器状态信息 [4/14/2016 lipengsong]
+	pFrame->m_strWorkState =strInfo;
+	pFrame->UpdateData(FALSE);
+
 	return 0;
 }
 
@@ -474,6 +526,7 @@ BEGIN_MESSAGE_MAP(CIRayDetectorDlg, CDialog)
 	ON_BN_CLICKED(IDC_RADIO_Inner, OnRADIOInner)
 	ON_BN_CLICKED(IDC_RADIO_Soft, OnRADIOSoft)
 	ON_BN_CLICKED(IDC_RADIO_Prep, OnRADIOPrep)
+	ON_BN_CLICKED(IDC_BUTTON1, OnBtnSaveScreen)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -516,6 +569,17 @@ BOOL CIRayDetectorDlg::OnInitDialog()
 	g_sAppCfgPath +=_T("iRayConfig.ini");
 
 
+	// 配置文件中的AEC预曝光图像合并模式打开  [4/14/2016 lipengsong]
+	CString strFullPathConfigFile= g_sAppPath + "res\\config.ini";
+	WritePrivateProfileString("CONFIG","AEC_PREV_BINNING_MODE","1",strFullPathConfigFile);
+
+	// 读取预设窗宽窗位 [4/14/2016 lipengsong]
+	m_nWinWidth = GetPrivateProfileInt("Image","Show_WindowWidth",5000,g_sAppCfgPath);
+	m_nWinPos   = GetPrivateProfileInt("Image","Show_WindowPos",7000,g_sAppCfgPath);
+
+	m_rRawImage.Init();
+
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -724,5 +788,77 @@ void CIRayDetectorDlg::iRaySetTriggerMode(int m_nTriggerMode)
 		::AfxMessageBox("Write TriggerMode Failed!");
 		return;
 	}
+
+}
+
+void CIRayDetectorDlg::OnBtnSaveScreen() 
+{
+	// TODO: Add your control notification handler code here
+	CDC *pdeskdc = GetDesktopWindow()->GetDC();    
+    CRect re;  
+    //获取窗口的大小  
+    GetDesktopWindow()->GetClientRect(&re);  
+    CBitmap bmp;  
+    bmp.CreateCompatibleBitmap(pdeskdc , re.Width() , re.Height());  
+    //创建一个兼容的内存画板  
+    CDC memorydc;  
+    memorydc.CreateCompatibleDC(pdeskdc);  
+	
+    //选中画笔  
+    CBitmap *pold = memorydc.SelectObject(&bmp);  
+	
+    //绘制图像  
+    memorydc.BitBlt(0,0,re.Width() ,re.Height(), pdeskdc , 0 ,0 ,SRCCOPY) ;  
+	
+    //获取鼠标位置，然后添加鼠标图像  
+    CPoint po;  
+    GetCursorPos(&po);  
+    HICON hinco = (HICON)GetCursor();  
+    memorydc.DrawIcon(po.x-10 , po.y - 10 , hinco);  
+    //选中原来的画笔  
+    memorydc.SelectObject(pold);  
+    BITMAP bit;  
+    bmp.GetBitmap(&bit);  
+	//  DWORD size = bit.bmWidth * bit.bmHeight ;  
+	
+    //定义 图像大小（单位：byte）  
+    DWORD size = bit.bmWidthBytes * bit.bmHeight ;  
+    LPSTR lpdata = (LPSTR)GlobalAlloc(GPTR , size) ;  
+	
+    //后面是创建一个bmp文件的必须文件头，想要了解可以参考msdn  
+	
+    BITMAPINFOHEADER pbitinfo;  
+    pbitinfo.biBitCount = 24 ;   
+    pbitinfo.biClrImportant = 0;  
+    pbitinfo.biCompression = BI_RGB ;  
+    pbitinfo.biHeight = bit.bmHeight ;   
+    pbitinfo.biPlanes = 1 ;  
+    pbitinfo.biSize = sizeof(BITMAPINFOHEADER);  
+    pbitinfo.biSizeImage =size;  
+    pbitinfo.biWidth = bit.bmWidth;  
+    pbitinfo.biXPelsPerMeter = 0;  
+    pbitinfo.biYPelsPerMeter = 0 ;  
+	
+    GetDIBits(pdeskdc->m_hDC , bmp , 0 , pbitinfo.biHeight , lpdata ,   
+        (BITMAPINFO*)&pbitinfo,DIB_RGB_COLORS);  
+	
+    BITMAPFILEHEADER bfh;  
+    bfh.bfReserved1 = bfh.bfReserved2 = 0 ;  
+    bfh.bfType = ((WORD)('M'<< 8)|'B');  
+    bfh.bfSize = 54 + size ;   
+    bfh.bfOffBits = 54 ;  
+	
+    //写入文件  
+	
+    CFile file; 
+	MakeSureDirectoryPathExists("C:\\Console\\Screen\\");
+    if ( file.Open("C:\\Console\\Screen\\ceshi.bmp" , CFile::modeCreate|CFile::modeWrite) )  
+    {  
+        file.WriteHuge( &bfh , sizeof(BITMAPFILEHEADER) );  
+        file.WriteHuge(&pbitinfo , sizeof(BITMAPINFOHEADER));  
+        file.WriteHuge(lpdata , size);  
+        file.Close();  
+    }  
+    GlobalFree(lpdata);	
 
 }

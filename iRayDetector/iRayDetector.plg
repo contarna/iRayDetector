@@ -6,6 +6,23 @@
 --------------------Configuration: iRayDetector - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x804 /fo"Debug/iRayDetector.res" /d "_DEBUG" /d "_AFXDLL" "D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\iRayDetector.rc"" 
+Creating temporary file "C:\Users\lipengsong\AppData\Local\Temp\RSPDAB4.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/iRayDetectorD.pdb" /debug /machine:I386 /out:"bin/iRayDetectorD.exe" /pdbtype:sept 
+".\Debug\cdib.obj"
+".\Debug\iRayDetector.obj"
+".\Debug\iRayDetectorAcq.obj"
+".\Debug\iRayDetectorDlg.obj"
+".\Debug\iRayMammoDet.obj"
+".\Debug\RawDib.obj"
+".\Debug\StdAfx.obj"
+".\Debug\iRayDetector.res"
+]
+Creating command line "link.exe @C:\Users\lipengsong\AppData\Local\Temp\RSPDAB4.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Linking...
 
 
 

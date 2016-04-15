@@ -50,6 +50,8 @@ public:
 	ConfigInfo m_configInfo;
 	SyncboxInfo m_syncInfo;
 	DetectorMode m_detectorMode;
+	int m_nWinPos;
+	int m_nWinWidth;
 
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CIRayDetectorDlg)
@@ -74,6 +76,7 @@ protected:
 	afx_msg void OnRADIOInner();
 	afx_msg void OnRADIOSoft();
 	afx_msg void OnRADIOPrep();
+	afx_msg void OnBtnSaveScreen();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
