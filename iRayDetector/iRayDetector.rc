@@ -90,7 +90,7 @@ EXSTYLE WS_EX_APPWINDOW
 CAPTION "iRayDetector"
 FONT 9, "宋体"
 BEGIN
-    PUSHBUTTON      "连接",IDC_BtnConnect,475,24,80,31
+    PUSHBUTTON      "连接",IDC_BtnConnect,495,24,51,31
     CONTROL         "手动曝光",IDC_RADIO_Manual,"Button",BS_AUTORADIOBUTTON | 
                     WS_GROUP,446,100,48,10
     CONTROL         "AEC曝光",IDC_RADIO_AEC,"Button",BS_AUTORADIOBUTTON,522,
@@ -113,6 +113,7 @@ BEGIN
     GROUPBOX        "曝光模式",IDC_STATIC,433,75,160,49
     GROUPBOX        "触发模式",IDC_STATIC,435,136,150,61
     PUSHBUTTON      "保存截图",IDC_BUTTON1,525,291,37,35,NOT WS_VISIBLE
+    PUSHBUTTON      "断开",IDC_BtnClose,495,217,51,31
 END
 
 

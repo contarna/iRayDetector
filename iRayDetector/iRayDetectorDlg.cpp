@@ -527,6 +527,7 @@ BEGIN_MESSAGE_MAP(CIRayDetectorDlg, CDialog)
 	ON_BN_CLICKED(IDC_RADIO_Soft, OnRADIOSoft)
 	ON_BN_CLICKED(IDC_RADIO_Prep, OnRADIOPrep)
 	ON_BN_CLICKED(IDC_BUTTON1, OnBtnSaveScreen)
+	ON_BN_CLICKED(IDC_BtnClose, OnBtnClose)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -861,4 +862,18 @@ void CIRayDetectorDlg::OnBtnSaveScreen()
     }  
     GlobalFree(lpdata);	
 
+}
+
+void CIRayDetectorDlg::OnBtnClose() 
+{
+	// TODO: Add your control notification handler code here
+	int result = FPD_Close(m_idInfo);
+	if (result ==FPD_NO_ERR)
+	{
+		::AfxMessageBox("Close Connect Success.");
+	}
+	else
+	{
+		::AfxMessageBox("Close Failed!");
+	}
 }

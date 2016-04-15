@@ -77,6 +77,7 @@ protected:
 	afx_msg void OnRADIOSoft();
 	afx_msg void OnRADIOPrep();
 	afx_msg void OnBtnSaveScreen();
+	afx_msg void OnBtnClose();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
