@@ -553,3 +553,81 @@ port2: 0
 
 2016-04-15 11:05:17:200 : [INFO]: UDP connect error.(Error Code: -1)
 2016-04-15 11:05:17:200 : [ERROR]: The GIGE adapter can't connected. Error Code: -1;
+2016-04-18 09:56:14:009 : [INFO]:Initialize:
+Config path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\config.ini
+Correct path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Log path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Dll path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\
+IP1 : 192.168.8.188
+IP2 :
+Set log info: 1
+Double detector: 0
+Conn mode: FPD_NET_CONN
+port1: 28000
+port2: 0
+
+2016-04-18 09:56:14:027 : [INFO]: UDP connect error.(Error Code: -1)
+2016-04-18 09:56:14:027 : [ERROR]: The GIGE adapter can't connected. Error Code: -1;
+2016-04-18 09:56:15:776 : [INFO]: Close lib is OK.
+2016-04-18 09:56:17:456 : [INFO]: Close lib is OK.
+2016-04-18 09:56:19:265 : [INFO]:Initialize:
+Config path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\config.ini
+Correct path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Log path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Dll path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\
+IP1 : 192.168.8.188
+IP2 :
+Set log info: 1
+Double detector: 0
+Conn mode: FPD_NET_CONN
+port1: 28000
+port2: 0
+
+2016-04-18 09:56:19:266 : [INFO]: UDP connect error.(Error Code: -1)
+2016-04-18 09:56:19:267 : [ERROR]: The GIGE adapter can't connected. Error Code: -1;
+2016-04-18 10:00:21:880 : [INFO]:Initialize:
+Config path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\config.ini
+Correct path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Log path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Dll path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\
+IP1 : 192.168.8.188
+IP2 :
+Set log info: 1
+Double detector: 0
+Conn mode: FPD_NET_CONN
+port1: 28000
+port2: 0
+
+2016-04-18 10:00:21:881 : [INFO]: UDP connect error.(Error Code: -1)
+2016-04-18 10:00:21:882 : [ERROR]: The GIGE adapter can't connected. Error Code: -1;
+2016-04-18 10:00:24:551 : [INFO]: Close lib is OK.
+2016-04-18 14:08:17:026 : [INFO]:Initialize:
+Config path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\config.ini
+Correct path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Log path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Dll path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\
+IP1 : 192.168.8.188
+IP2 :
+Set log info: 1
+Double detector: 0
+Conn mode: FPD_NET_CONN
+port1: 28000
+port2: 0
+
+2016-04-18 14:08:17:043 : [INFO]: UDP connect error.(Error Code: -1)
+2016-04-18 14:08:17:043 : [ERROR]: The GIGE adapter can't connected. Error Code: -1;
+2016-04-18 14:08:20:158 : [INFO]:Initialize:
+Config path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\config.ini
+Correct path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Log path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\res\
+Dll path: D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\bin\
+IP1 : 192.168.8.188
+IP2 :
+Set log info: 1
+Double detector: 0
+Conn mode: FPD_NET_CONN
+port1: 28000
+port2: 0
+
+2016-04-18 14:08:20:159 : [INFO]: UDP connect error.(Error Code: -1)
+2016-04-18 14:08:20:160 : [ERROR]: The GIGE adapter can't connected. Error Code: -1;

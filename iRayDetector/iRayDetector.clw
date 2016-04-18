@@ -59,7 +59,7 @@ Control4=IDOK,button,1342373889
 [DLG:IDD_IRAYDETECTOR_DIALOG]
 Type=1
 Class=CIRayDetectorDlg
-ControlCount=16
+ControlCount=17
 Control1=IDC_BtnConnect,button,1342242816
 Control2=IDC_RADIO_Manual,button,1342308361
 Control3=IDC_RADIO_AEC,button,1342177289
@@ -76,4 +76,5 @@ Control13=IDC_STATIC,button,1342177287
 Control14=IDC_STATIC,button,1342177287
 Control15=IDC_BUTTON1,button,1073807360
 Control16=IDC_BtnClose,button,1342242816
+Control17=IDC_STATIC,static,1342308352
 

@@ -695,7 +695,7 @@ void CIRayDetectorDlg::OnBtnConnect()
 
 		//触发模式
 		int m_nTriggerMode = m_configInfo.TriggerMode;
-		m_RadioExpMode =m_nTriggerMode;
+		m_RadioTriggerMode =m_nTriggerMode;
 
 		m_strWorkState ="Connect Success!";
 		
@@ -703,6 +703,7 @@ void CIRayDetectorDlg::OnBtnConnect()
 	}
 	else if(iResult == FPD_A_DETECTOR_CONN_ERR || iResult == FPD_B_DETECTOR_CONN_ERR)
 	{
+		// 双探测器，未用到 [4/18/2016 lipengsong]
 		char strMessage[256] = {0};
 		sprintf(strMessage,"Connect double detectors information: ErrCode[%d]: %s", iResult, g_strErrList[iResult]);
 		::AfxMessageBox(strMessage, NULL, MB_ICONINFORMATION);
@@ -712,6 +713,9 @@ void CIRayDetectorDlg::OnBtnConnect()
 		char strMessage[256] = {0};
 		sprintf(strMessage,"Connect detector error! ErrCode[%d]: %s", iResult, g_strErrList[iResult]);
 		::AfxMessageBox(strMessage, NULL, MB_ICONERROR);
+		m_strWorkState ="Connect Failed!";
+		UpdateData(FALSE);
+
 	}
 }
 
