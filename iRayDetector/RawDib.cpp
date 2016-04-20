@@ -34,7 +34,9 @@ CRawDib::~CRawDib()
 
 BEGIN_MESSAGE_MAP(CRawDib, CStatic)
 	//{{AFX_MSG_MAP(CRawDib)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -316,3 +318,24 @@ void CRawDib::AdjustWidAndPos(unsigned short *lpDIBBits, int nHeight, int nWidth
 
 }
 //类内调用函数======================================
+
+void CRawDib::OnLButtonDown(UINT nFlags, CPoint point) 
+{
+	// TODO: Add your message handler code here and/or call default
+	
+	CStatic::OnLButtonDown(nFlags, point);
+}
+
+void CRawDib::OnLButtonUp(UINT nFlags, CPoint point) 
+{
+	// TODO: Add your message handler code here and/or call default
+	
+	CStatic::OnLButtonUp(nFlags, point);
+}
+
+void CRawDib::OnMouseMove(UINT nFlags, CPoint point) 
+{
+	// TODO: Add your message handler code here and/or call default
+	
+	CStatic::OnMouseMove(nFlags, point);
+}

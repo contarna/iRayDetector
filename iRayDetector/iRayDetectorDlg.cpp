@@ -25,7 +25,14 @@ CString g_sAppCfgPath;
 int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int iValue2, int iValue3, int iValue4, int iValue5, float fValue1, float fValue2, void *pVoid)
 {
 	
-	CIRayDetectorDlg* pFrame=(CIRayDetectorDlg*)AfxGetApp();
+	//CIRayDetectorDlg* pFrame=(CIRayDetectorDlg*)AfxGetApp();
+	CWnd* pWnd = AfxGetApp()->GetMainWnd();
+	CIRayDetectorDlg * pDlg;
+	pDlg=(CIRayDetectorDlg *) pWnd;
+	   //pDlg->ShowMsg(pString);
+	pDlg->m_strTemp ="TEST";
+
+	::AfxMessageBox("TEST");
 
 	CString strInfo;
 
@@ -42,10 +49,10 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 		strInfo = _T("Exposure timeout");
 		
 		int nExpMode = 0;
-		FPD_GetExposureMode(pFrame->m_hGigeAdapter, nExpMode);
+		FPD_GetExposureMode(pDlg->m_hGigeAdapter, nExpMode);
 		if(nExpMode != 0)
 		{
-			FPD_SetExposureMode(pFrame->m_hGigeAdapter, nExpMode);
+			FPD_SetExposureMode(pDlg->m_hGigeAdapter, nExpMode);
 		}
 	}
 	else if(iMsg == FPD_IMAGE_TIME)
@@ -73,35 +80,39 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 		strInfo = _T("got image");
 		// 得到正式图像 [4/14/2016 lipengsong]
 		CString  str_ImageFileName ="iRayMam.raw";
-		CString  str_ImageFilePath =pFrame->m_initInfo.strCorrectPath +str_ImageFileName;
+		CString  str_ImageFilePath =pDlg->m_initInfo.strCorrectPath +str_ImageFileName;
 		
-		int ImageSize =pFrame->m_configInfo.detectorInfo.ImageHeight * pFrame->m_configInfo.detectorInfo.ImageWidth * sizeof(WORD);
+		int ImageSize =pDlg->m_configInfo.detectorInfo.ImageHeight * pDlg->m_configInfo.detectorInfo.ImageWidth * sizeof(WORD);
 		WORD* ImageData = pData;
 		
 		DWORD nWriten;
 		HANDLE hWriteFile;
 		hWriteFile=CreateFileA(str_ImageFilePath,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
 		BOOL result =WriteFile(hWriteFile,ImageData,ImageSize,&nWriten,NULL);
+		// 在读取图像前关闭句柄，否则会导致文件占用无法打开 [4/20/2016 lipengsong]
+		CloseHandle(hWriteFile);
 		if (!result)
 		{
 			strInfo ="Save Image Failed!";
 		}
 		else
 		{
-			pFrame->m_rRawImage.m_nWPos =pFrame->m_nWinPos;
-			pFrame->m_rRawImage.m_nWWid =pFrame->m_nWinWidth;
-			pFrame->m_rRawImage.LoadRawImage(str_ImageFilePath);
+			
+			pDlg->m_rRawImage.m_nWPos =pDlg->m_nWinPos;
+			pDlg->m_rRawImage.m_nWWid =pDlg->m_nWinWidth;
+			pDlg->m_rRawImage.LoadRawImage(str_ImageFilePath);
 		}
-		CloseHandle(hWriteFile);		
+			
 
 	}
 	else if(iMsg == FPD_IMAGE_BINNING)
 	{
 		// 得到AEC预曝光图像 [4/14/2016 lipengsong]
 		CString  str_AECFileName ="iRayMam_AEC.raw";
-		CString  str_AECFilePath =pFrame->m_initInfo.strCorrectPath +str_AECFileName;
+		CString  str_AECFilePath =pDlg->m_initInfo.strCorrectPath +str_AECFileName;
 
-		int ImageSize =pFrame->m_configInfo.dynamicInfo.BinningH * pFrame->m_configInfo.dynamicInfo.BinningW*sizeof(WORD);
+		int ImageSize =22*28*2;
+		//	pDlg->m_configInfo.dynamicInfo.BinningH * pDlg->m_configInfo.dynamicInfo.BinningW*sizeof(WORD);
 		WORD* ImageAECData = pData;
 
 		DWORD nWriten;
@@ -129,19 +140,19 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	else if(iMsg == FPD_CONFIG_DETECTOR)
 	{
 		strInfo = _T("Get Configuration");
-		FPD_GetDetectorConfiguration(hID, pFrame->m_configInfo);
+		FPD_GetDetectorConfiguration(hID, pDlg->m_configInfo);
 	}
 	else if(iMsg == FPD_GET_TEMPERATURE)
 	{
 		strInfo.Format(_T("Get Temperature: %f"), fValue1);
-		FPD_GetDetectorConfiguration(hID, pFrame->m_configInfo);
-		pFrame->m_strTemp =strInfo;
-		pFrame->UpdateData(FALSE);
+		FPD_GetDetectorConfiguration(hID, pDlg->m_configInfo);
+		pDlg->m_strTemp =strInfo;
+		//pFrame->UpdateData(FALSE);
 	}
 	else if(iMsg == FPD_GET_HUMIDITY)
 	{
 		strInfo.Format(_T("Get Humidity: %f"), fValue1);
-		FPD_GetDetectorConfiguration(hID, pFrame->m_configInfo);
+		FPD_GetDetectorConfiguration(hID, pDlg->m_configInfo);
 	}
 	else if(iMsg == FPD_SYNC_BOX_SEND_EXPOSURE)
 	{
@@ -328,10 +339,10 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 		strInfo.Format(_T("Exposure Interrupted"));
 
 		int nExpMode = 0;
-		FPD_GetExposureMode(pFrame->m_hGigeAdapter, nExpMode);
+		FPD_GetExposureMode(pDlg->m_hGigeAdapter, nExpMode);
 		if(nExpMode != 0)
 		{
-			FPD_SetExposureMode(pFrame->m_hGigeAdapter, nExpMode);
+			FPD_SetExposureMode(pDlg->m_hGigeAdapter, nExpMode);
 		}
 	}
 	else if(iMsg == FPD_SLAVE_INIT_AFTER_POWER_ON_ERR)
@@ -436,8 +447,8 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	}
 
 	// 更新探测器状态信息 [4/14/2016 lipengsong]
-	pFrame->m_strWorkState =strInfo;
-	pFrame->UpdateData(FALSE);
+	pDlg->m_strWorkState =strInfo;
+	//pDlg->UpdateData(FALSE);
 
 	return 0;
 }
@@ -787,7 +798,7 @@ void CIRayDetectorDlg::iRaySetTriggerMode(int m_nTriggerMode)
 
 	m_configInfo.TriggerMode =m_nTriggerMode;
 
-	result =FPD_WriteConfiguration(m_hGigeAdapter,FPD_CONFIG_ROM,m_configInfo);
+	result =FPD_WriteConfiguration(m_hGigeAdapter,FPD_CONFIG_RAM,m_configInfo);
 	if(result !=FPD_NO_ERR)
 	{
 		::AfxMessageBox("Write TriggerMode Failed!");

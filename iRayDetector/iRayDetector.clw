@@ -46,6 +46,8 @@ Type=0
 BaseClass=CStatic
 HeaderFile=RawDib.h
 ImplementationFile=RawDib.cpp
+Filter=W
+VirtualFilter=WC
 
 [DLG:IDD_ABOUTBOX]
 Type=1
