@@ -31,6 +31,8 @@ class CIRayDetectorDlg : public CDialog
 {
 // Construction
 public:
+	void iRayLoadCorrection();
+	void iRayWriteCfg(int ExpMode);
 	void iRaySetTriggerMode(int m_nTriggerMode);
 	CIRayDetectorDlg(CWnd* pParent = NULL);	// standard constructor
 // Dialog Data
@@ -78,6 +80,7 @@ protected:
 	afx_msg void OnRADIOPrep();
 	afx_msg void OnBtnSaveScreen();
 	afx_msg void OnBtnClose();
+	afx_msg void OnBtnGetTemp();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

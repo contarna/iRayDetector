@@ -146,8 +146,9 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	{
 		strInfo.Format(_T("Get Temperature: %f"), fValue1);
 		FPD_GetDetectorConfiguration(hID, pDlg->m_configInfo);
-		pDlg->m_strTemp =strInfo;
+		//pDlg->m_strTemp =strInfo;
 		//pFrame->UpdateData(FALSE);
+		::AfxMessageBox(strInfo);
 	}
 	else if(iMsg == FPD_GET_HUMIDITY)
 	{
@@ -539,6 +540,7 @@ BEGIN_MESSAGE_MAP(CIRayDetectorDlg, CDialog)
 	ON_BN_CLICKED(IDC_RADIO_Prep, OnRADIOPrep)
 	ON_BN_CLICKED(IDC_BUTTON1, OnBtnSaveScreen)
 	ON_BN_CLICKED(IDC_BtnClose, OnBtnClose)
+	ON_BN_CLICKED(IDC_BtnGetTemp, OnBtnGetTemp)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -589,6 +591,7 @@ BOOL CIRayDetectorDlg::OnInitDialog()
 	m_nWinWidth = GetPrivateProfileInt("Image","Show_WindowWidth",5000,g_sAppCfgPath);
 	m_nWinPos   = GetPrivateProfileInt("Image","Show_WindowPos",7000,g_sAppCfgPath);
 
+	m_rRawImage.SetParent(CWnd::FromHandle(GetSafeHwnd()));
 	m_rRawImage.Init();
 
 	
@@ -742,6 +745,10 @@ void CIRayDetectorDlg::OnRADIOManual()
 	{
 		::AfxMessageBox("Set ExpMode Failed!");
 	}
+	else
+	{
+		iRayWriteCfg(ExpMode_Manual);
+	}
 }
 
 void CIRayDetectorDlg::OnRadioAec() 
@@ -754,6 +761,10 @@ void CIRayDetectorDlg::OnRadioAec()
 	if (result != FPD_NO_ERR)
 	{
 		::AfxMessageBox("Set ExpMode Failed!");
+	}
+	else
+	{
+		iRayWriteCfg(ExpMode_AEC);
 	}
 }
 
@@ -891,4 +902,97 @@ void CIRayDetectorDlg::OnBtnClose()
 	{
 		::AfxMessageBox("Close Failed!");
 	}
+}
+
+void CIRayDetectorDlg::iRayWriteCfg(int ExpMode)
+{
+	ASSERT(m_hGigeAdapter !=NULL);
+	
+	int result = FPD_GetDetectorConfiguration(m_hGigeAdapter, m_configInfo);
+	if (result != FPD_NO_ERR)
+	{
+		::AfxMessageBox("Get Detector ConfigInfo Failed!");
+		return;
+	}
+	m_configInfo.ExpMode =ExpMode;
+
+	m_configInfo.DynaOffsetMode =1;
+	m_configInfo.wirelessInfo.PreMode=1;
+	m_configInfo.wirelessInfo.OffsetType=1;
+	if (ExpMode ==1)
+	{
+		m_configInfo.DynaOffsetGapTime =500;
+	}
+	else
+	{
+		m_configInfo.DynaOffsetGapTime =100;
+		m_configInfo.AecMainTime =1000;
+	}
+	
+	result =FPD_WriteConfiguration(m_hGigeAdapter,FPD_CONFIG_RAM,m_configInfo);
+	if(result !=FPD_NO_ERR)
+	{
+		::AfxMessageBox("Write Detector ConfigInfo Failed!");
+		return;
+	}
+
+}
+
+/*设置出图校正模式，加载校正文件*/
+void CIRayDetectorDlg::iRayLoadCorrection()
+{
+	int m_nOffsetMode,m_nGainMode,m_nDefectMode;
+	int iResult;
+
+	// 读取模式配置 [4/21/2016 lipengsong]
+	m_nOffsetMode = GetPrivateProfileInt("iRay_Correct","Offset_Mode",0,g_sAppCfgPath);
+	m_nGainMode	  = GetPrivateProfileInt("iRay_Correct","Gain_Mode",0,g_sAppCfgPath);
+	m_nDefectMode = GetPrivateProfileInt("iRay_Correct","Defect_Mode",0,g_sAppCfgPath);
+
+	//设置校正文件加载模式
+	//Offset
+	if (m_nOffsetMode !=0)
+	{
+		::AfxMessageBox("It used hardware offset calibration, can not set software offset calibration!");
+	}
+	else
+	{
+		FPD_SetPreOffsetCorrection(m_hGigeAdapter, false);
+		FPD_SetPostOffsetCorrection(m_hGigeAdapter, false);
+	}
+	//Gain
+	if (m_nGainMode ==1)
+	{
+		iResult = FPD_SetGainCorrection(m_hGigeAdapter, true, FPD_CORR_CURRENT);
+		if( iResult != FPD_NO_ERR )
+		{
+			MessageBox("The gain correct file loading failed!", NULL, MB_ICONERROR);
+			FPD_SetGainCorrection(m_hGigeAdapter, false, FPD_CORR_NULL);
+		}
+	}
+	else
+	{
+		FPD_SetGainCorrection(m_hGigeAdapter, false, FPD_CORR_NULL);
+	}
+	//Defect
+	if (m_nDefectMode ==1)
+	{
+		iResult = FPD_SetDefectCorrection(m_hGigeAdapter, true, FPD_CORR_CURRENT);
+		if( iResult != FPD_NO_ERR )
+		{
+			MessageBox("The defect correct file loading failed!", NULL, MB_ICONERROR);
+			FPD_SetDefectCorrection(m_hGigeAdapter, false, FPD_CORR_NULL);
+		}
+	}
+	else
+	{
+		FPD_SetDefectCorrection(m_hGigeAdapter, false, FPD_CORR_NULL);
+	}
+	
+}
+
+void CIRayDetectorDlg::OnBtnGetTemp() 
+{
+	// TODO: Add your control notification handler code here
+	FPD_ReadTemperature(m_hGigeAdapter);
 }

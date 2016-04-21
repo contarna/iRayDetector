@@ -322,20 +322,28 @@ void CRawDib::AdjustWidAndPos(unsigned short *lpDIBBits, int nHeight, int nWidth
 void CRawDib::OnLButtonDown(UINT nFlags, CPoint point) 
 {
 	// TODO: Add your message handler code here and/or call default
-	
+	m_OrigPoint =point;
+	m_IsLeftDown =TRUE;
 	CStatic::OnLButtonDown(nFlags, point);
 }
 
 void CRawDib::OnLButtonUp(UINT nFlags, CPoint point) 
 {
 	// TODO: Add your message handler code here and/or call default
-	
+	m_IsLeftDown =FALSE;
 	CStatic::OnLButtonUp(nFlags, point);
 }
 
 void CRawDib::OnMouseMove(UINT nFlags, CPoint point) 
 {
 	// TODO: Add your message handler code here and/or call default
-	
+	CPoint m_pointMove;
+	m_pointMove.x =point.x -m_OrigPoint.x;
+	m_pointMove.y =point.y -m_OrigPoint.y;
+
+	m_nWPos += m_pointMove.x*20;
+	m_nWWid += m_pointMove.y*20;
+	DrawImage();
+	UpdateData(FALSE);
 	CStatic::OnMouseMove(nFlags, point);
 }

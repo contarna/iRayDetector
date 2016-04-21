@@ -44,6 +44,8 @@ public:
 	int			m_nWWid;
 	int			m_nWPos;
 	WORD		g_GammaLUT[65536];
+	CPoint		m_OrigPoint;
+	BOOL		m_IsLeftDown;
 
 	// Operations
 public:
