@@ -29,10 +29,7 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	CWnd* pWnd = AfxGetApp()->GetMainWnd();
 	CIRayDetectorDlg * pDlg;
 	pDlg=(CIRayDetectorDlg *) pWnd;
-	   //pDlg->ShowMsg(pString);
-	pDlg->m_strTemp ="TEST";
 
-	::AfxMessageBox("TEST");
 
 	CString strInfo;
 
@@ -119,6 +116,7 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 		HANDLE hWriteFile;
 		hWriteFile=CreateFileA(str_AECFilePath,GENERIC_WRITE,0,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
 		BOOL result =WriteFile(hWriteFile,ImageAECData,ImageSize,&nWriten,NULL);
+		CloseHandle(hWriteFile);	
 		if (!result)
 		{
 			strInfo ="Save AEC Image Failed!";
@@ -129,7 +127,7 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 			pFrame->m_rRawImage.LoadRawImage(str_AECFilePath);
 		}
 		*/
-		CloseHandle(hWriteFile);		
+	
 
 	}
 	else if(iMsg == FPD_IMAGE_PREV)
@@ -144,11 +142,9 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	}
 	else if(iMsg == FPD_GET_TEMPERATURE)
 	{
-		strInfo.Format(_T("Get Temperature: %f"), fValue1);
+		strInfo.Format(_T("Get Temperature: %3.2f"), fValue1);
 		FPD_GetDetectorConfiguration(hID, pDlg->m_configInfo);
-		//pDlg->m_strTemp =strInfo;
-		//pFrame->UpdateData(FALSE);
-		::AfxMessageBox(strInfo);
+		pDlg->SetDlgItemText(IDC_STATIC_Temp,strInfo);
 	}
 	else if(iMsg == FPD_GET_HUMIDITY)
 	{
@@ -448,8 +444,8 @@ int CALLBACK DRInfoCallback(HANDLE hID, int iMsg, WORD *pData, int iValue1, int 
 	}
 
 	// 更新探测器状态信息 [4/14/2016 lipengsong]
-	pDlg->m_strWorkState =strInfo;
-	//pDlg->UpdateData(FALSE);
+	pDlg->SetDlgItemText(IDC_STATIC_WorkState,strInfo);
+
 
 	return 0;
 }
@@ -541,6 +537,7 @@ BEGIN_MESSAGE_MAP(CIRayDetectorDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON1, OnBtnSaveScreen)
 	ON_BN_CLICKED(IDC_BtnClose, OnBtnClose)
 	ON_BN_CLICKED(IDC_BtnGetTemp, OnBtnGetTemp)
+	ON_BN_CLICKED(IDC_BtnOpenFile, OnBtnOpenFile)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -633,9 +630,15 @@ void CIRayDetectorDlg::OnPaint()
 
 		// Draw the icon
 		dc.DrawIcon(x, y, m_hIcon);
+
+
 	}
 	else
-	{
+	{	
+		if (m_rRawImage.m_pRawData !=NULL)
+		{
+			m_rRawImage.DrawImage();
+		}
 		CDialog::OnPaint();
 	}
 }
@@ -714,6 +717,9 @@ void CIRayDetectorDlg::OnBtnConnect()
 		m_strWorkState ="Connect Success!";
 		
 		UpdateData(FALSE);
+
+		// 加载校正文件模板 [4/22/2016 lipengsong]
+		iRayLoadCorrection();
 	}
 	else if(iResult == FPD_A_DETECTOR_CONN_ERR || iResult == FPD_B_DETECTOR_CONN_ERR)
 	{
@@ -925,7 +931,7 @@ void CIRayDetectorDlg::iRayWriteCfg(int ExpMode)
 	}
 	else
 	{
-		m_configInfo.DynaOffsetGapTime =100;
+		m_configInfo.DynaOffsetGapTime =500;
 		m_configInfo.AecMainTime =1000;
 	}
 	
@@ -995,4 +1001,17 @@ void CIRayDetectorDlg::OnBtnGetTemp()
 {
 	// TODO: Add your control notification handler code here
 	FPD_ReadTemperature(m_hGigeAdapter);
+}
+
+void CIRayDetectorDlg::OnBtnOpenFile() 
+{
+	// TODO: Add your control notification handler code here
+	CString str_FileName;
+	CFileDialog dlg(TRUE, NULL, NULL,OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,NULL);
+	
+	if(dlg.DoModal() == IDOK)
+	{
+		str_FileName = dlg.GetPathName();
+		m_rRawImage.LoadRawImage(str_FileName);
+	}
 }

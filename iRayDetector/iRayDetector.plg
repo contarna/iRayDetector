@@ -6,6 +6,29 @@
 --------------------Configuration: iRayDetector - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
+Creating temporary file "C:\Users\lipengsong\AppData\Local\Temp\RSP5D3E.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /I "\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /FR"Debug/" /Fp"Debug/iRayDetector.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\MG\ÞÈÈðÌ½²âÆ÷\iRayDetectorDemo\iRayDetector\iRayDetector\iRayDetectorDlg.cpp"
+]
+Creating command line "cl.exe @C:\Users\lipengsong\AppData\Local\Temp\RSP5D3E.tmp" 
+Creating temporary file "C:\Users\lipengsong\AppData\Local\Temp\RSP5D3F.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/iRayDetectorD.pdb" /debug /machine:I386 /out:"bin/iRayDetectorD.exe" /pdbtype:sept 
+".\Debug\cdib.obj"
+".\Debug\iRayDetector.obj"
+".\Debug\iRayDetectorAcq.obj"
+".\Debug\iRayDetectorDlg.obj"
+".\Debug\iRayMammoDet.obj"
+".\Debug\RawDib.obj"
+".\Debug\StdAfx.obj"
+".\Debug\iRayDetector.res"
+]
+Creating command line "link.exe @C:\Users\lipengsong\AppData\Local\Temp\RSP5D3F.tmp"
+<h3>Output Window</h3>
+Compiling...
+iRayDetectorDlg.cpp
+Linking...
 
 
 

@@ -81,6 +81,7 @@ protected:
 	afx_msg void OnBtnSaveScreen();
 	afx_msg void OnBtnClose();
 	afx_msg void OnBtnGetTemp();
+	afx_msg void OnBtnOpenFile();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

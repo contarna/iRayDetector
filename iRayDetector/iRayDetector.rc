@@ -104,18 +104,21 @@ BEGIN
     CONTROL         "PREP",IDC_RADIO_Prep,"Button",BS_AUTORADIOBUTTON,524,
                     180,32,10
     DEFPUSHBUTTON   "关闭",IDOK,523,351,50,30
-    CONTROL         "",IDC_STATIC_Image,"Static",SS_BLACKFRAME,7,7,416,386
+    CONTROL         "",IDC_STATIC_Image,"Static",SS_BLACKFRAME | SS_NOTIFY,7,
+                    7,416,386
     GROUPBOX        "状态",IDC_STATIC_State,7,404,592,32
     LTEXT           "Static",IDC_STATIC_WorkState,20,415,190,15,SS_SUNKEN | 
                     WS_BORDER
-    LTEXT           "Static",IDC_STATIC_Temp,300,415,100,16,SS_SUNKEN | 
+    LTEXT           "Static",IDC_STATIC_Temp,445,413,100,16,SS_SUNKEN | 
                     WS_BORDER
     GROUPBOX        "曝光模式",IDC_STATIC,433,75,160,49
     GROUPBOX        "触发模式",IDC_STATIC,435,136,150,61
-    PUSHBUTTON      "保存截图",IDC_BUTTON1,525,291,37,35,NOT WS_VISIBLE
+    PUSHBUTTON      "保存截图",IDC_BUTTON1,527,309,37,35,NOT WS_VISIBLE
     PUSHBUTTON      "断开",IDC_BtnClose,495,217,51,31
-    LTEXT           "温度",IDC_STATIC,270,419,17,8
-    PUSHBUTTON      "获取温度",IDC_BtnGetTemp,406,417,38,11
+    LTEXT           "温度",IDC_STATIC,415,417,17,8
+    PUSHBUTTON      "获取温度",IDC_BtnGetTemp,551,415,38,11
+    PUSHBUTTON      "打开图像",IDC_BtnOpenFile,497,259,52,30
+    LTEXT           "Static",IDC_STATIC_WWWC,234,415,123,15
 END
 
 

@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "RawDib.h"
+#include "iRayDetectorDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -15,14 +16,16 @@ static char THIS_FILE[] = __FILE__;
 
 CRawDib::CRawDib()
 {
-	m_nWWid = 65535;
-	m_nWPos = 32768;
+	m_nWWid = 16384;
+	m_nWPos = 8192;
 
 	m_pRawDataMatrix = new BYTE[ImageMatrixSize]; //3072*3072*2
 	memset(m_pRawDataMatrix,0,ImageMatrixSize);
 
 	m_pRawData = NULL;
 	BuildTable(2.2F);
+
+	m_IsLeftDown =FALSE;
 }
 
 CRawDib::~CRawDib()
@@ -337,13 +340,26 @@ void CRawDib::OnLButtonUp(UINT nFlags, CPoint point)
 void CRawDib::OnMouseMove(UINT nFlags, CPoint point) 
 {
 	// TODO: Add your message handler code here and/or call default
-	CPoint m_pointMove;
-	m_pointMove.x =point.x -m_OrigPoint.x;
-	m_pointMove.y =point.y -m_OrigPoint.y;
+	if (m_IsLeftDown)
+	{
+		CPoint m_pointMove;
+		m_pointMove.x =point.x -m_OrigPoint.x;
+		m_pointMove.y =point.y -m_OrigPoint.y;
+		
+		m_nWPos += m_pointMove.x*5;
+		m_nWWid += m_pointMove.y*5;
 
-	m_nWPos += m_pointMove.x*20;
-	m_nWWid += m_pointMove.y*20;
-	DrawImage();
-	UpdateData(FALSE);
+		DrawImage();
+
+		CWnd* pWnd = AfxGetApp()->GetMainWnd();
+		CIRayDetectorDlg * pDlg;
+		pDlg=(CIRayDetectorDlg *) pWnd;
+
+		CString str_WWWC;
+		str_WWWC.Format("Pos:%d Width:%d",m_nWPos,m_nWWid);
+		pDlg->SetDlgItemText(IDC_STATIC_WWWC,str_WWWC);
+		UpdateData(FALSE);
+	}
+
 	CStatic::OnMouseMove(nFlags, point);
 }
